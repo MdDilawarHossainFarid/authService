@@ -1,24 +1,17 @@
-
 const express = require('express');
 const { Sequelize } = require('sequelize');
+const { Model, DataTypes } = require('sequelize');
+
 const app = express();
 const port = 3000;
 
 
-// Initialize Sequelize
-// const sequelize = new Sequelize({
-//   dialect: 'mysql',
-//   database: 'employee',
-//   user: 'root',
-//   password: '2023@#Node#D96',
-//   host: 'localhost',
-//   port: 3306,
-// });
+
 
 const sequelize = new Sequelize('employee', 'root', '2023@#Node#D96', {
   host: 'localhost',
   dialect:'mysql'})
-// Test connection
+
 sequelize.authenticate()
   .then(() => {
     console.log('✅ Connection has been established successfully.');
@@ -27,9 +20,40 @@ sequelize.authenticate()
     console.error('❌ Unable to connect to the database:', error);
   });
 
+
+
+class User extends Model {}
+
+User.init({
+
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  lastName: {
+    type: DataTypes.STRING
+  }
+}, {
+
+  sequelize,
+  modelName: 'User' 
+});
+
+  User.sync();
+
+ async function object1() {
+    const person = await User.create({ firstName: 'farid', lastName: 'hossain' });
+ const userData = await User.findAll();
+return JSON.stringify(userData);
+  }
+
+
+
+ 
+
+
 app.get('/',(req,res) => {
-    let sum = 1 + 2;
-    res.send(sum )
+    res.send()
 })
 
 app.listen(port, () => {
