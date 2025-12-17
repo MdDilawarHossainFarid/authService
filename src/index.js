@@ -4,6 +4,7 @@ const { Model, DataTypes } = require('sequelize');
 
 const app = express();
 const port = 3000;
+app.use(express.json());
 
 
 
@@ -38,23 +39,35 @@ User.init({
   sequelize,
   modelName: 'User' 
 });
-
-  User.sync();
-
- async function object1() {
-    const person = await User.create({ firstName: 'farid', lastName: 'hossain' });
- const userData = await User.findAll();
-return JSON.stringify(userData);
-  }
+User.sync();
 
 
 
- 
-
+ async function getData() {
+return  await User.findAll();
+}
 
 app.get('/',(req,res) => {
-    res.send()
+  getData().then(value => {
+        res.send(value)
+});
+
 })
+
+app.post('/user',  async(req, res) => {
+try{
+     const person = await User.create({
+   firstName:req.body.firstName,
+   lastName:req.body.lastName,
+    });
+  await person.save();
+    res.status(201).json(person);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+
 
 app.listen(port, () => {
     console.log(`app is runing on port ${port}`)
